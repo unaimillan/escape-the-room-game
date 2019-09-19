@@ -16,12 +16,14 @@ data Dir = Dir Integer Integer
 -- data Level = Level Coords (Coords -> Tile)
 -- | State is player coords and colors of opened doors/pressed buttons
 data State = State Coords [DoorColor]
+-- | Type for `levelMap` function
+type LevelMap = Coords -> Tile
 
 
 -- | My level definition
 --myLevel :: Level
 --myLevel = Level (Coords 0 0) levelMap [] -- (openDoors [red, blue] levelMap)
-myLevel = level10
+myLevel = level13
 
 levelMap :: Coords -> Tile
 levelMap (Coords i j)
