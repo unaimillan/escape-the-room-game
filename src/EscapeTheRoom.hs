@@ -23,7 +23,7 @@ type LevelMap = Coords -> Tile
 -- | My level definition
 --myLevel :: Level
 --myLevel = Level (Coords 0 0) levelMap [] -- (openDoors [red, blue] levelMap)
-myLevel = level13
+myLevel = level11
 
 levelMap :: Coords -> Tile
 levelMap (Coords i j)
@@ -320,6 +320,30 @@ solution7 :: IO ()
 solution7 = drawingOf( (colored (translucent red) (solidCircle 1)) 
   <> solidCircle 0.5)
 
+
+
+-- Assignment 4.1.2
+-- High order aproach
+-- | Initialise game 'State' for a given 'LevelMap'.
+initLevelMap :: Level -> State
+initLevelMap (Level coords _ colors) = State coords colors
+
+-- | Is current level complete given some game 'State'?
+isLevelComplete :: Level -> State -> Bool
+isLevelComplete (Level _ func _) (State coords _) = isFinal
+  where
+    isFinal = case func coords of
+      Exit -> True
+      _ -> False
+
+-- | Turn an interactive program into one with multiple levels.
+withManyLevels
+  :: [level] -- ^ A list of levels.
+  -> (level -> world) -- ^ Initialise world for level.
+  -> (level -> world -> Bool) -- ^ Is this level complete?
+  -> InteractionOf (WithLevel level world) -- ^ 'interactionOf'.
+  -> InteractionOf world
+withManyLevels _ _ _ = id
 
 run :: IO ()
 run = solution6

@@ -26,7 +26,7 @@ data Coords = Coords Int Int
 data Level = Level
   Coords            -- Start coordinates of the player.
   (Coords -> Tile)  -- Level map.
-  [Coords]          -- Doors, opened on start.
+  [DoorColor]          -- Doors, opened on start.
 
 -- | A list of all level maps.
 levels :: [Level]
@@ -576,7 +576,7 @@ level10 = Level (Coords (-9) (-6)) levelMap []
 
 -- | Author: Aidar Valeev
 level11 :: Level
-level11 = Level (Coords 7 (-8)) levelMap openDoors
+level11 = Level (Coords 7 (-8)) levelMap [] -- openDoors
   where
     openDoors = [Coords 1 (-6), Coords 6 7, Coords (-3) (-2), Coords 0 8]
     levelMap (Coords i j)
