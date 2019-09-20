@@ -262,7 +262,7 @@ neoUpdate :: (Double -> world -> world)
 neoUpdate _ _ = id -- define behavior for animation
 
 neoHandle :: world -> (Event -> world -> world) 
-  -> Event -> WithStartScreen world -> WithStartScreen world
+  -> (Event -> WithStartScreen world -> WithStartScreen world)
 neoHandle initial _ (KeyPress " ") StartScreen = GameOn initial
 neoHandle _ _ _ StartScreen = StartScreen
 neoHandle _ func event (GameOn state) = GameOn (func event state)
@@ -311,7 +311,7 @@ isLevelComplete (Level _ func _) (State coords _) = isFinal
     isFinal = case func coords of
       Exit -> True
       _ -> False
-
+{-
 data WithLevel level world = WithLevel level world
 
 -- | Turn an interactive program into one with multiple levels.
@@ -328,12 +328,20 @@ withManyLevels
 
 -- multiInit :: () -> (WithLevel level world)
 
+-- multiUpdate - dummy
+
+-- multiUpdate - if `final state` is true change level in 
+-- `(WithLevel next_level (initLevelMap state))` otherwise call default update
+
+-- multiDraw -- draw initial if there are 13 levels, draw final if 0 of them
+
 interactionWithMany :: InteractionOf world
 interactionWithMany = withManyLevels levels initLevelMap isLevelComplete
   interactionWithStartScreen
 
 solution8 :: IO ()
 solution8 = interactionWithMany initialWorld updateWorld handleWorld drawWorld
+-}
 
 run :: IO ()
 run = solution6
