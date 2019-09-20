@@ -20,3 +20,6 @@ cabal.sandbox.config
 *.hp
 *.eventlog
 cabal.project.local
+
+# Visual Code workspace file
+*.code-workspace
