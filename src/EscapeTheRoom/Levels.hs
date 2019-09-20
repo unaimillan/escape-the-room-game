@@ -575,7 +575,7 @@ level10 = Level (Coords (-9) (-6)) levelMap []
         ]
 
 -- | Author: Aidar Valeev
-level11 :: Level
+level11 :: Level -- `openDoors` omited because of type mismatch
 level11 = Level (Coords 7 (-8)) levelMap [] -- openDoors
   where
     openDoors = [Coords 1 (-6), Coords 6 7, Coords (-3) (-2), Coords 0 8]

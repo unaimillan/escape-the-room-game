@@ -23,34 +23,7 @@ type LevelMap = Coords -> Tile
 -- | My level definition
 --myLevel :: Level
 --myLevel = Level (Coords 0 0) levelMap [] -- (openDoors [red, blue] levelMap)
-myLevel = level11
-
-levelMap :: Coords -> Tile
-levelMap (Coords i j)
-  | abs i > 9 || abs j > 9 = Wall  -- walls around map
-  | trigger 0 7  = Exit
-  | trigger 0 0  = Floor
-  | trigger 0 1 = Door CPink
-  | trigger (-6) 0 = Button CPink
-  | trigger (-2) 0 = Door CBlue
-  | trigger (-4) 0 = Door CBlue
-  | trigger 0 (-2) = Door CGreen
-  | trigger 2 0 = Door CRed
-  | trigger (-1) 0 = Button CRed
-  | trigger 0 (-1) = Button CBlue
-  | trigger (-3) 0 = Button CBlue
-  | trigger (1) 0 = Button CGreen
-  | trigger (-6) (-6) = Door CRed
-  | trigger (6) (-6) = Door CBlue
-  | i == j       = Wall
-  | -i == j      = Wall
-  | i < 0 && j == 1 = Wall
-  | -8 <= i && i < 0 && j == -1 = Wall
-  | j == 6 && (-6) < i && i < 6 = Door CYellow
-  | trigger (-4) 5 = Button CYellow
-  | otherwise = Floor -- floor otherwise
-  where
-    trigger x y = (i == x) && (j == y)
+myLevel = level13
 
 
 -- | Helper functions
@@ -116,7 +89,7 @@ drawTile Floor = floorTile
 -- | Assignment 2.1.1 -- Validate moves
 tryMove :: Coords -> [DoorColor] -> Bool
 tryMove coords colors
-  | canMove ((properLevelMap colors) coords) = True
+  | canMove (properLevelMap colors coords) = True
   | otherwise = False
 
 canMove :: Tile -> Bool
@@ -250,18 +223,18 @@ withReset :: InteractionOf world
   -> (Event -> world -> world)
   -> (world -> Picture)
   -> IO ()
-withReset func initial update handle draw 
-  = func initial update new_handle draw
+withReset func initial update handle
+  = func initial update new_handle
   where
     new_handle (KeyPress "Esc") _ = initial
     new_handle event state = handle event state
 
 -- interactionOf :: InteractionOf world
-newInteractionOf :: InteractionOf world
-newInteractionOf = (withReset interactionOf)
+interastionWithReset :: InteractionOf world
+interastionWithReset = withReset interactionOf
 
 solution5 :: IO ()
-solution5 = newInteractionOf initialWorld updateWorld handleWorld drawWorld
+solution5 = interastionWithReset initialWorld updateWorld handleWorld drawWorld
 
 
 -- | Assignment 3.2.2
@@ -281,7 +254,7 @@ startScreen = title <> subtitle <> heart <> background
     heart = translated 0 (-5) (sc 3 (lettering "❤️"))
     background = colored (light pink) (solidRectangle 50 50)
 
-neoInit :: (world) -> WithStartScreen world
+neoInit :: world -> WithStartScreen world
 neoInit _ = StartScreen -- | (GameOn world)
 
 neoUpdate :: (Double -> world -> world) 
@@ -311,13 +284,16 @@ withStartScreen func initial update handle draw
     myHandle = neoHandle initial handle
     myDraw = neoDraw draw
 
+interactionWithStartScreen :: InteractionOf world
+interactionWithStartScreen = withStartScreen interastionWithReset
+
 solution6 :: IO ()
-solution6 = (withStartScreen (withReset interactionOf)) 
+solution6 = interactionWithStartScreen
   initialWorld updateWorld handleWorld drawWorld
 
 
 solution7 :: IO ()
-solution7 = drawingOf( (colored (translucent red) (solidCircle 1)) 
+solution7 = drawingOf( colored (translucent red) (solidCircle 1)
   <> solidCircle 0.5)
 
 
@@ -336,6 +312,8 @@ isLevelComplete (Level _ func _) (State coords _) = isFinal
       Exit -> True
       _ -> False
 
+data WithLevel level world = WithLevel level world
+
 -- | Turn an interactive program into one with multiple levels.
 withManyLevels
   :: [level] -- ^ A list of levels.
@@ -343,7 +321,19 @@ withManyLevels
   -> (level -> world -> Bool) -- ^ Is this level complete?
   -> InteractionOf (WithLevel level world) -- ^ 'interactionOf'.
   -> InteractionOf world
-withManyLevels _ _ _ = id
+withManyLevels 
+  lvls initLevel isFinished func
+  initial update handle draw = 
+  func multiInit multiUpdate multiHandle multiDraw
+
+-- multiInit :: () -> (WithLevel level world)
+
+interactionWithMany :: InteractionOf world
+interactionWithMany = withManyLevels levels initLevelMap isLevelComplete
+  interactionWithStartScreen
+
+solution8 :: IO ()
+solution8 = interactionWithMany initialWorld updateWorld handleWorld drawWorld
 
 run :: IO ()
 run = solution6
