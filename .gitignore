@@ -27,3 +27,6 @@ cabal.project.local~
 .stack-work/
 my-project.cabal
 *~
+
+# Visual Code workspace file
+*.code-workspace
