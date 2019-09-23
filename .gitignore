@@ -23,3 +23,4 @@ cabal.project.local
 
 # Visual Code workspace file
 *.code-workspace
+.vscode
