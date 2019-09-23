@@ -30,3 +30,4 @@ my-project.cabal
 
 # Visual Code workspace file
 *.code-workspace
+.vscode

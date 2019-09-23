@@ -15,7 +15,7 @@ import EscapeTheRoom.Levels
 data Dir = Dir Integer Integer
 -- data Level = Level Coords (Coords -> Tile)
 -- | State is player coords and colors of opened doors/pressed buttons
-data State = State Coords [DoorColor]
+data State = State Coords (Coords -> Tile) [DoorColor]
 -- | Type for `levelMap` function
 type LevelMap = Coords -> Tile
 
@@ -23,6 +23,7 @@ type LevelMap = Coords -> Tile
 -- | My level definition
 --myLevel :: Level
 --myLevel = Level (Coords 0 0) levelMap [] -- (openDoors [red, blue] levelMap)
+myLevel :: Level
 myLevel = level13
 
 
@@ -147,7 +148,7 @@ genNewCoords dirStr old_state
     | otherwise                     = old_coords
   where
     new_coords = sumCoords old_coords (convCoords dirStr)
-    State old_coords old_colors = old_state
+    State old_coords _ old_colors = old_state
     
 -- | Convert coordinates from string to d[Coords]
 convCoords :: Text -> Coords
@@ -183,9 +184,7 @@ isButtonTile _ = False
 
 -- | interactionOf part
 initialWorld :: State
-initialWorld = State initCoords []
-  where
-    (Level initCoords _ _) = myLevel
+initialWorld = initLevelMap myLevel
 
 updateWorld :: Double -> State -> State
 updateWorld _ = id
@@ -193,15 +192,16 @@ updateWorld _ = id
 -- genNewCoords String Coords -> Coords
 -- toggleColors [DoorColor] newCoords -> [DoorColor]
 handleWorld :: Event -> State -> State
-handleWorld (KeyPress dir) state = State new_coords new_colors
+handleWorld (KeyPress dir) state = State new_coords curLevelMap new_colors
   where
-    State _ old_colors = state
+    State _ curLevelMap old_colors = state
     new_coords = genNewCoords dir state
     new_colors = toggleColors new_coords old_colors
 handleWorld _ state = state
 
 drawWorld :: State -> Picture
-drawWorld (State coords colors) = drawPlayerAt coords <> pictureOfLevel colors
+drawWorld (State coords _ colors) = drawPlayerAt coords 
+  <> pictureOfLevel colors
 
 solution4 :: IO ()
 solution4 = interactionOf initialWorld updateWorld handleWorld drawWorld
@@ -299,20 +299,21 @@ solution7 = drawingOf( colored (translucent red) (solidCircle 1)
 
 
 -- Assignment 4.1.2
+-- | Special datatype for several levels
+data WithLevel level world = WithLevel level world
+
 -- High order aproach
 -- | Initialise game 'State' for a given 'LevelMap'.
 initLevelMap :: Level -> State
-initLevelMap (Level coords _ colors) = State coords colors
+initLevelMap (Level coords func colors) = State coords func colors
 
 -- | Is current level complete given some game 'State'?
 isLevelComplete :: Level -> State -> Bool
-isLevelComplete (Level _ func _) (State coords _) = isFinal
+isLevelComplete (Level _ func _) (State coords _ _) = isFinal
   where
     isFinal = case func coords of
       Exit -> True
       _ -> False
-{-
-data WithLevel level world = WithLevel level world
 
 -- | Turn an interactive program into one with multiple levels.
 withManyLevels
@@ -325,6 +326,11 @@ withManyLevels
   lvls initLevel isFinished func
   initial update handle draw = 
   func multiInit multiUpdate multiHandle multiDraw
+  where
+    multiInit = WithLevel (head lvls) initial
+    multiUpdate _ = id
+    multiHandle _ = id
+    multiDraw (WithLevel lvl st) = draw st
 
 -- multiInit :: () -> (WithLevel level world)
 
@@ -341,7 +347,7 @@ interactionWithMany = withManyLevels levels initLevelMap isLevelComplete
 
 solution8 :: IO ()
 solution8 = interactionWithMany initialWorld updateWorld handleWorld drawWorld
--}
+
 
 run :: IO ()
 run = solution6
