@@ -130,7 +130,7 @@ level3 :: Level
 level3 = Level (Coords 0 0) levelMap []
   where
     levelMap (Coords x y)
-      | abs(x) > 9 ||abs(y) > 9 = Wall
+      | abs x > 9 ||abs y > 9 = Wall
       | x == 0 && y /= 0 = Wall
       | x == 5 && y>6 = Wall
       | y==5 && x>1 = Wall
@@ -230,19 +230,19 @@ level5 = Level (Coords 0 (-1)) levelMap []
          || j == 7 && i `elem` [-8, -6, -3, -1, 1, 4]
          || j == 6 && i `elem` [-8, -6, -5, -3, -1, 0, 1, 3, 4, 6, 7, 8]
          || j == 5 && i `elem` [-8, -6, -3, 3, 8]
-         || j == 4 && not (i `elem` [-9, -7, -5, 6])
+         || j == 4 && i `notElem` [-9, -7, -5, 6]
          || j == 3 && i `elem` [-6, 2]
-         || j == 2 && not (i `elem` [-9, 1, 3, 9])
+         || j == 2 && i `notElem` [-9, 1, 3, 9]
          || j == 1 && i `elem` [-8, -4, 0, 2, 8]
          || j == 0 && i `elem` [-6, -5, -4, -2, 0, 2, 3, 4, 5, 6, 7, 8]
          || j == -9 && i `elem` [-6, 0]
-         || j == -8 && not (i `elem` [-9, 9, -7, -5, -1, 4])
+         || j == -8 && i `notElem` [-9, 9, -7, -5, -1, 4]
          || j == -7 && i `elem` [-8, -6, -2,3,  8]
-         || j == -6 && not (i `elem` [-9, 9, -7, -5, 0, 7])
+         || j == -6 && i `notElem` [-9, 9, -7, -5, 0, 7]
          || j == -5 && i `elem` [-8, -6, -4, -1, 8]
-         || j == -4 && not (i `elem` [-9, -7, -5, -3, 9])
+         || j == -4 && i `notElem` [-9, -7, -5, -3, 9]
          || j == -3 && i `elem` [-8, -7, -6, -4, 3]
-         || j == -2 && not (i `elem` [-9, -8, -7, -5, 2])
+         || j == -2 && i `notElem` [-9, -8, -7, -5, 2]
          || j == -1 && i `elem` [-9, -8, -2, -6]            = Wall
       | otherwise                                           = Floor
 
@@ -273,17 +273,17 @@ level6 = Level (Coords 9 5) levelMap []
       | j == (-5) && i == (-3) = Door c
       | j == (-6) && i == (-2) = Door c
 
-      | j == (-4) && i == (4) = Door c
-      | j == (-5) && i == (5) = Door c
-      | j == (-5) && i == (4) = Button c
-      | j == (-5) && i == (3) = Door c
-      | j == (-6) && i == (4) = Door c
+      | j == (-4) && i == 4 = Door c
+      | j == (-5) && i == 5 = Door c
+      | j == (-5) && i == 4 = Button c
+      | j == (-5) && i == 3 = Door c
+      | j == (-6) && i == 4 = Door c
 
-      | j == (-4) && i == (4) = Door c
-      | j == (-5) && i == (5) = Door c
-      | j == (-5) && i == (4) = Button c
-      | j == (-5) && i == (3) = Door c
-      | j == (-6) && i == (4) = Door c
+      | j == (-4) && i == 4 = Door c
+      | j == (-5) && i == 5 = Door c
+      | j == (-5) && i == 4 = Button c
+      | j == (-5) && i == 3 = Door c
+      | j == (-6) && i == 4 = Door c
 
       | j == 0 && i == -8 = Door c
       | j == 1 && i == -7 = Door c
@@ -431,15 +431,15 @@ level7 = Level (Coords 0 3) levelMap []
   where
     levelMap (Coords i j)
       | i==0 && j==0 = Exit
-      | i==(-6) && j==0 = (Button CBlue)
-      | i==(-5) && j==0 = (Wall)
-      | j==(-5) && i==0 = (Wall)
-      | j==5 && i==0 = (Wall)
-      | i*i+j*j<=4  = (Door CBlue)
-      | i*i+j*j<=16 = (Button CRed)
-      | i*i+j*j>25 &&  i*i+j*j<36 = (Wall)
-      | i*i+j*j>16 &&  i*i+j*j<49 = (Door CRed)
-      | i*i+j*j>=49 &&  i*i+j*j<=81 = (Floor)
+      | i==(-6) && j==0 = Button CBlue
+      | i==(-5) && j==0 = Wall
+      | j==(-5) && i==0 = Wall
+      | j==5 && i==0 = Wall
+      | i*i+j*j<=4  = Door CBlue
+      | i*i+j*j<=16 = Button CRed
+      | i*i+j*j>25 &&  i*i+j*j<36 = Wall
+      | i*i+j*j>16 &&  i*i+j*j<49 = Door CRed
+      | i*i+j*j>=49 &&  i*i+j*j<=81 = Floor
       |otherwise = Wall
 
 
@@ -510,7 +510,7 @@ level9 = Level (Coords (-1) (-1)) levelMap []
       | i == 0 && j == -9                  = Door CGreen
       | i == 4 && (j > -6 && j < -2)       = Door CPurple
       | i == 4 && j == -9                  = Button CPurple
-      | abs (i) + abs(j) == 1              = Door CGreen
+      | abs i + abs j == 1              = Door CGreen
       | i == 9 && j == -7                  = Button CYellow
       | i > 5 && i < 9 && j == -7          = Floor
       | i == 8 && j == -6                  = Floor
@@ -541,7 +541,7 @@ level10 = Level (Coords (-9) (-6)) levelMap []
       | mapValue == '8' = Exit
       | otherwise = Floor -- floor otherwise
       where
-        mapValue = levelMapRaw !! (fromIntegral y) !! (fromIntegral x)
+        mapValue = levelMapRaw !! fromIntegral y !! fromIntegral x
         y = -j + 10
         x = i + 10
 
@@ -723,9 +723,9 @@ level13 = Level (Coords 0 0) levelMap []
       | trigger (-1) 0 = Button CRed
       | trigger 0 (-1) = Button CBlue
       | trigger (-3) 0 = Button CBlue
-      | trigger (1) 0 = Button CGreen
+      | trigger 1 0 = Button CGreen
       | trigger (-6) (-6) = Door CRed
-      | trigger (6) (-6) = Door CBlue
+      | trigger 6 (-6) = Door CBlue
       | i == j       = Wall
       | -i == j      = Wall
       | i < 0 && j == 1 = Wall
