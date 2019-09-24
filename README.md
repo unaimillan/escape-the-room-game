@@ -1,4 +1,8 @@
-# project-template
+# Escape the Room game
+
+Assignment 4. IU course Programming in Haskell
+
+## project-template
 
 [![Build Status](https://travis-ci.org/iu-haskell-spring-2019/project-template.svg?branch=master)](https://travis-ci.org/iu-haskell-spring-2019/project-template)
 
@@ -26,19 +30,19 @@ This will install all dependencies, including a proper version of GHC
 
 This project has one executable that you can run with
 
-```
+```bash
 stack exec my-project-exe
 ```
 
 During development it is recommended a combination of `build` and `exec`:
 
-```
+```bash
 stack build && stack exec my-project-exe
 ```
 
 Alternatively, you can run
 
-```
+```bash
 stack build file-watch
 ```
 
@@ -48,13 +52,13 @@ For continuous builds in the background.
 
 You can run GHCi (GHC interpreter) for the whole project with
 
-```
+```bash
 stack ghci
 ```
 
 or
 
-```
+```bash
 stack repl
 ```
 
@@ -71,14 +75,14 @@ you with the development process:
 
 - `:t` or `:type` — show the type of an expression:
 
-```
+```haskell
 >>> :t map (+1)
 map (+1) :: Num b => [b] -> [b]
 ```
 
 - `:l` or `:load` — load file or module:
 
-```
+```haskell
 >>> :load src/MyProject.hs
 [1 of 1] Compiling MyProject        ( src/MyProject.hs, interpreted )
 Ok, one module loaded.
@@ -98,13 +102,13 @@ For faster feedback from the compiler it is recommended to use `ghcid`
 
 Install `ghcid` with `stack`:
 
-```
+```bash
 stack install ghcid
 ```
 
 Now you can run `ghcid` with Stack using
 
-```
+```bash
 ghcid -c "stack repl"
 ```
 
